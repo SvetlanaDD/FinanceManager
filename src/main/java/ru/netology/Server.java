@@ -13,6 +13,13 @@ public class Server {
 
     public static void main(String[] arg) {
         Manager manager = new Manager(new ArrayList<>());
+        //десериализация
+        File file = new File("data.bin");
+        try {
+            manager = WorkWithFile.loadFromBinFile(file);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
@@ -31,6 +38,8 @@ public class Server {
                         throw new RuntimeException(e);
                     }
                     out.println(Logic.generateOut(manager));
+                    // сериализация
+                    WorkWithFile.saveBin(manager);
                 }
             }
         } catch (IOException e) {

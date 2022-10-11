@@ -23,9 +23,9 @@ public class Client {
             // отправляем запрос
             JSONObject buy = new JSONObject();
 
-//            buy.put("title", "булка");
-//            buy.put("date", "2022.02.08");
-//            buy.put("sum", 200);
+            buy.put("title", "булка");
+            buy.put("date", "2022.02.08");
+            buy.put("sum", 200);
 
 //            buy.put("title", "колбаса");
 //            buy.put("date", "2022.02.10");

@@ -1,6 +1,8 @@
 package ru.netology;
 
-public class Buy {
+import java.io.Serializable;
+
+public class Buy implements Serializable {
     private String title;
     private String date;
     private Long sum;
