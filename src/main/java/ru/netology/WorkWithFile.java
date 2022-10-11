@@ -1,8 +1,7 @@
 package ru.netology;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,5 +18,22 @@ public class WorkWithFile {
             System.out.println("Не могу прочитать файл");
         }
         return categoriesTSV;
+    }
+
+    public static void saveBin(Manager manager) throws IOException {
+        ObjectOutputStream outSer = new ObjectOutputStream(new FileOutputStream("data.bin"));
+        outSer.writeObject(manager);
+        outSer.close();
+    }
+
+    public static Manager loadFromBinFile(File file) throws IOException, ClassNotFoundException {
+        Manager manager = new Manager(new ArrayList<>());
+        if (file.exists()) {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+            manager = (Manager) in.readObject();
+            System.out.println(manager);
+            in.close();
+        }
+        return manager;
     }
 }

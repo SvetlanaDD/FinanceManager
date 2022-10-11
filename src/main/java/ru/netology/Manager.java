@@ -1,9 +1,11 @@
 package ru.netology;
 
 import org.json.simple.JSONObject;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class Manager {
+public class Manager implements Serializable {
     private List<Buy> listBuy;
 
     public Manager(List<Buy> listBuy) {
