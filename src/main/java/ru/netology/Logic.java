@@ -8,6 +8,22 @@ import java.util.*;
 public class Logic {
 
     public static JSONObject generateOut(Manager manager) {
+
+        Map<String, String> categoriesTSV = WorkWithFile.tsvRead(new File("categories.tsv"));
+
+        Category maxCategory = maxCategory(manager, categoriesTSV);
+
+        JSONObject list = new JSONObject();
+
+        list.put("sum", maxCategory.getSum());
+        list.put("category", maxCategory.getName());
+        JSONObject maxCategoryJSON = new JSONObject();
+        maxCategoryJSON.put("maxCategory", list);
+
+        return maxCategoryJSON;
+    }
+
+    public static Category maxCategory(Manager manager, Map<String, String> categoriesTSV) {
         Map<String, Long> category = new HashMap<>(); // общие суммы покупок по категориям
         category.put("еда", 0L);
         category.put("одежда", 0L);
@@ -15,10 +31,7 @@ public class Logic {
         category.put("финансы", 0L);
         category.put("другое", 0L);
         Long max = 0L;
-        String maxCategoryKey = null;   // категория с максимальной суммой покупок
-
-        Map<String, String> categoriesTSV = WorkWithFile.tsvRead(new File("categories.tsv"));
-
+        Category maxCategory = new Category("");// категория с максимальной суммой покупок
         for (Buy buy : manager.getListBuy()) {
             if (categoriesTSV.containsKey(buy.getTitle())) {     // если у покупки нет категории, то выбираем категорию "другое"
                 switch (categoriesTSV.get(buy.getTitle())) {
@@ -60,19 +73,11 @@ public class Logic {
             // поиск ключа по value в мапе
             for (Map.Entry<String, Long> pair : category.entrySet()) {
                 if (pair.getValue() == max) {
-                    maxCategoryKey = pair.getKey();
+                    maxCategory.setName(pair.getKey());
+                    maxCategory.setSum(max);
                 }
             }
-
         }
-
-        JSONObject list = new JSONObject();
-        list.put("sum", category.get(maxCategoryKey));
-        list.put("category", maxCategoryKey);
-
-        JSONObject maxCategory = new JSONObject();
-        maxCategory.put("maxCategory", list);
-
         return maxCategory;
     }
 }
