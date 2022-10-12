@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -31,13 +32,18 @@ public class Server {
 
                     JSONParser parser = new JSONParser();
                     Object obj;
+                    String date;
                     try {
                         obj = parser.parse(in.readLine());
-                        manager.addBuy(obj);
+                        JSONObject jsonObject = (JSONObject) obj;
+                        String title = (String) jsonObject.get("title");
+                        date = (String) jsonObject.get("date");
+                        Long sum = (Long) jsonObject.get("sum");
+                        manager.addBuy(new Buy(title, date, sum));
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
-                    out.println(Logic.generateOut(manager));
+                    out.println(Logic.generateOut(manager, date));
                     // сериализация
                     WorkWithFile.saveBin(manager);
                 }

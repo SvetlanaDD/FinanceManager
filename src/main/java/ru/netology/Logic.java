@@ -3,24 +3,84 @@ package ru.netology;
 import org.json.simple.JSONObject;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Logic {
 
-    public static JSONObject generateOut(Manager manager) {
+    public static JSONObject generateOut(Manager manager, String date) {
 
         Map<String, String> categoriesTSV = WorkWithFile.tsvRead(new File("categories.tsv"));
 
         Category maxCategory = maxCategory(manager, categoriesTSV);
+        Category maxYearCategory = maxYearCategory(manager, date, categoriesTSV);
+        Category maxMonthCategory = maxMonthCategory(manager, date, categoriesTSV);
+        Category maxDayCategory = maxDayCategory(manager, date, categoriesTSV);
 
+        JSONObject maxCategoryJSON = new JSONObject();
         JSONObject list = new JSONObject();
-
         list.put("sum", maxCategory.getSum());
         list.put("category", maxCategory.getName());
-        JSONObject maxCategoryJSON = new JSONObject();
         maxCategoryJSON.put("maxCategory", list);
 
+        JSONObject listYear = new JSONObject();
+        listYear.put("sum", maxYearCategory.getSum());
+        listYear.put("category", maxYearCategory.getName());
+        maxCategoryJSON.put("maxYearCategory", listYear);
+
+        JSONObject listMonth = new JSONObject();
+        listMonth.put("sum", maxMonthCategory.getSum());
+        listMonth.put("category", maxMonthCategory.getName());
+        maxCategoryJSON.put("maxMonthCategory", listMonth);
+
+        JSONObject listDay = new JSONObject();
+        listDay.put("sum", maxDayCategory.getSum());
+        listDay.put("category", maxDayCategory.getName());
+        maxCategoryJSON.put("maxDayCategory", listDay);
+
         return maxCategoryJSON;
+    }
+
+    public static Category maxYearCategory(Manager manager, String date, Map<String, String> categoriesTSV) {
+        Manager managerDate = new Manager(new ArrayList<>());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        for (Buy buy : manager.getListBuy()) {
+            LocalDate buyDay = LocalDate.parse(buy.getDate(), formatter);
+            if (localDate.getYear() == buyDay.getYear()) {
+                managerDate.addBuy(buy);
+            }
+        }
+        return maxCategory(managerDate, categoriesTSV);
+    }
+
+    public static Category maxMonthCategory(Manager manager, String date, Map<String, String> categoriesTSV) {
+        Manager managerDate = new Manager(new ArrayList<>());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        for (Buy buy : manager.getListBuy()) {
+            LocalDate buyDay = LocalDate.parse(buy.getDate(), formatter);
+            if ((localDate.getYear() == buyDay.getYear()) && (localDate.getMonthValue() == buyDay.getMonthValue())) {
+                managerDate.addBuy(buy);
+            }
+        }
+        return maxCategory(managerDate, categoriesTSV);
+    }
+
+    public static Category maxDayCategory(Manager manager, String date, Map<String, String> categoriesTSV) {
+        Manager managerDate = new Manager(new ArrayList<>());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        for (Buy buy : manager.getListBuy()) {
+            LocalDate buyDay = LocalDate.parse(buy.getDate(), formatter);
+            if ((localDate.getYear() == buyDay.getYear()) &&
+                    (localDate.getMonthValue() == buyDay.getMonthValue()) &&
+                    (localDate.getDayOfMonth() == buyDay.getDayOfMonth())) {
+                managerDate.addBuy(buy);
+            }
+        }
+        return maxCategory(managerDate, categoriesTSV);
     }
 
     public static Category maxCategory(Manager manager, Map<String, String> categoriesTSV) {

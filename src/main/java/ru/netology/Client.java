@@ -23,28 +23,36 @@ public class Client {
             // отправляем запрос
             JSONObject buy = new JSONObject();
 
-            buy.put("title", "булка");
-            buy.put("date", "2022.02.08");
-            buy.put("sum", 200);
+//            buy.put("title", "булка");
+//            buy.put("date", "2022.10.12");
+//            buy.put("sum", 200);
+
+            buy.put("title", "сухарики");
+            buy.put("date", "2022.10.10");
+            buy.put("sum", 50);
+
+//            buy.put("title", "курица");
+//            buy.put("date", "2021.05.15");
+//            buy.put("sum", 300);
 
 //            buy.put("title", "колбаса");
-//            buy.put("date", "2022.02.10");
+//            buy.put("date", "2022.10.10");
 //            buy.put("sum", 150);
 
 //            buy.put("title", "шапка");
-//            buy.put("date", "2022.02.11");
+//            buy.put("date", "2022.09.15");
 //            buy.put("sum", 500);
 
 //            buy.put("title", "акции");
-//            buy.put("date", "2022.02.11");
+//            buy.put("date", "2022.01.11");
 //            buy.put("sum", 1000);
 
-//            buy.put("title", "курица");
-//            buy.put("date", "2022.02.11");
-//            buy.put("sum", 200);
+//            buy.put("title", "тапки");
+//            buy.put("date", "2021.11.11");
+//            buy.put("sum", 600);
 
 //            buy.put("title", "игрушка");
-//            buy.put("date", "2022.02.11");
+//            buy.put("date", "2021.10.12");
 //            buy.put("sum", 2000);
 
             out.println(buy.toJSONString());
