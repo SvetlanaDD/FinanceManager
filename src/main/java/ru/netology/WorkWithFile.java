@@ -31,7 +31,6 @@ public class WorkWithFile {
         if (file.exists()) {
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
             manager = (Manager) in.readObject();
-            System.out.println(manager);
             in.close();
         }
         return manager;

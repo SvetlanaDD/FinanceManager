@@ -1,7 +1,5 @@
 package ru.netology;
 
-import org.json.simple.JSONObject;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,13 +14,8 @@ public class Manager implements Serializable {
         return listBuy;
     }
 
-    public void addBuy (Object obj){
-        JSONObject jsonObject = (JSONObject) obj;
-        String title = (String) jsonObject.get("title");
-        String date = (String) jsonObject.get("date");
-        Long sum = (Long) jsonObject.get("sum");
-
-        listBuy.add(new Buy(title, date, sum));
+    public void addBuy(Buy buy) {
+        this.listBuy.add(buy);
     }
 }
 
