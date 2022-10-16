@@ -1,6 +1,7 @@
 package ru.netology;
 
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ import java.util.*;
 
 public class Logic {
 
-    public static JSONObject generateOut(Manager manager, String date) {
+    public static String generateOut(Manager manager, String date) {
 
         Map<String, String> categoriesTSV = WorkWithFile.tsvRead(new File("categories.tsv"));
 
@@ -18,26 +19,10 @@ public class Logic {
         Category maxMonthCategory = maxMonthCategory(manager, date, categoriesTSV);
         Category maxDayCategory = maxDayCategory(manager, date, categoriesTSV);
 
-        JSONObject maxCategoryJSON = new JSONObject();
-        JSONObject list = new JSONObject();
-        list.put("sum", maxCategory.getSum());
-        list.put("category", maxCategory.getName());
-        maxCategoryJSON.put("maxCategory", list);
-
-        JSONObject listYear = new JSONObject();
-        listYear.put("sum", maxYearCategory.getSum());
-        listYear.put("category", maxYearCategory.getName());
-        maxCategoryJSON.put("maxYearCategory", listYear);
-
-        JSONObject listMonth = new JSONObject();
-        listMonth.put("sum", maxMonthCategory.getSum());
-        listMonth.put("category", maxMonthCategory.getName());
-        maxCategoryJSON.put("maxMonthCategory", listMonth);
-
-        JSONObject listDay = new JSONObject();
-        listDay.put("sum", maxDayCategory.getSum());
-        listDay.put("category", maxDayCategory.getName());
-        maxCategoryJSON.put("maxDayCategory", listDay);
+        Statistic statistic = new Statistic(maxCategory, maxYearCategory, maxMonthCategory, maxDayCategory);
+        Gson gson = new GsonBuilder()
+                .create();
+        String maxCategoryJSON = gson.toJson(statistic);
 
         return maxCategoryJSON;
     }
@@ -85,44 +70,26 @@ public class Logic {
 
     public static Category maxCategory(Manager manager, Map<String, String> categoriesTSV) {
         Map<String, Long> category = new HashMap<>(); // общие суммы покупок по категориям
-        category.put("еда", 0L);
-        category.put("одежда", 0L);
-        category.put("быт", 0L);
-        category.put("финансы", 0L);
+        categoriesTSV.forEach((key, value) ->
+                {
+                    if (category.isEmpty()) {
+                        category.put(value, 0L);
+                    } else {
+                        if (!category.containsKey(value)) {
+                            category.put(value, 0L);
+                        }
+                    }
+                }
+        );
         category.put("другое", 0L);
         Long max = 0L;
         Category maxCategory = new Category("");// категория с максимальной суммой покупок
         for (Buy buy : manager.getListBuy()) {
             if (categoriesTSV.containsKey(buy.getTitle())) {     // если у покупки нет категории, то выбираем категорию "другое"
-                switch (categoriesTSV.get(buy.getTitle())) {
-                    case ("еда"): {
-                        category.put("еда", category.get("еда") + buy.getSum());
-                        if (category.get("еда") > max) {
-                            max = category.get("еда");
-                        }
-                        break;
-                    }
-                    case ("одежда"): {
-                        category.put("одежда", category.get("одежда") + buy.getSum());
-                        if (category.get("одежда") > max) {
-                            max = category.get("одежда");
-                        }
-                        break;
-                    }
-                    case ("быт"): {
-                        category.put("быт", category.get("быт") + buy.getSum());
-                        if (category.get("быт") > max) {
-                            max = category.get("быт");
-                        }
-                        break;
-                    }
-                    case ("финансы"): {
-                        category.put("финансы", category.get("финансы") + buy.getSum());
-                        if (category.get("финансы") > max) {
-                            max = category.get("финансы");
-                        }
-                        break;
-                    }
+                String categoryBuy = categoriesTSV.get(buy.getTitle());
+                category.put(categoryBuy, category.get(categoryBuy) + buy.getSum());
+                if (category.get(categoryBuy) > max) {
+                    max = category.get(categoryBuy);
                 }
             } else {
                 category.put("другое", category.get("другое") + buy.getSum());

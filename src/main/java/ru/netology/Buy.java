@@ -3,6 +3,7 @@ package ru.netology;
 import java.io.Serializable;
 
 public class Buy implements Serializable {
+    private static final long serialVersionUID = 123L;
     private String title;
     private String date;
     private Long sum;

@@ -5,9 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Server {
     private static final int PORT = 8989;
@@ -30,20 +29,14 @@ public class Server {
                 ) {
                     System.out.println("New connection accepted");
 
-                    JSONParser parser = new JSONParser();
-                    Object obj;
-                    String date;
-                    try {
-                        obj = parser.parse(in.readLine());
-                        JSONObject jsonObject = (JSONObject) obj;
-                        String title = (String) jsonObject.get("title");
-                        date = (String) jsonObject.get("date");
-                        Long sum = (Long) jsonObject.get("sum");
-                        manager.addBuy(new Buy(title, date, sum));
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
-                    out.println(Logic.generateOut(manager, date));
+                    String jsonIn = in.readLine();
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson gson = builder
+                            .create();
+                    Buy buy = gson.fromJson(jsonIn, Buy.class);
+                    manager.addBuy(buy);
+
+                    out.println(Logic.generateOut(manager, buy.getDate()));
                     // сериализация
                     WorkWithFile.saveBin(manager);
                 }

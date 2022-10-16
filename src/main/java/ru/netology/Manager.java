@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Manager implements Serializable {
+    private static final long serialVersionUID = 1234567L;
     private List<Buy> listBuy;
 
     public Manager(List<Buy> listBuy) {

@@ -1,8 +1,7 @@
 package ru.netology;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,54 +20,27 @@ public class Client {
              BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) // поток
         {
             // отправляем запрос
-            JSONObject buy = new JSONObject();
+            Buy buy = new Buy("булка", "2022.10.12", 200L);
+//            Buy buy = new Buy("сухарики", "2022.10.10", 50L);
+//            Buy buy = new Buy("шапка", "2022.09.15", 500L);
+//            Buy buy = new Buy("колбаса", "2022.10.10", 150L);
+//            Buy buy = new Buy("курица", "2021.05.15", 300L);
+//            Buy buy = new Buy("акции", "2022.01.11", 1000L);
+//            Buy buy = new Buy("тапки", "2021.11.11", 600L);
+//            Buy buy = new Buy("игрушка", "2021.10.12", 2000L);
 
-//            buy.put("title", "булка");
-//            buy.put("date", "2022.10.12");
-//            buy.put("sum", 200);
-
-            buy.put("title", "сухарики");
-            buy.put("date", "2022.10.10");
-            buy.put("sum", 50);
-
-//            buy.put("title", "курица");
-//            buy.put("date", "2021.05.15");
-//            buy.put("sum", 300);
-
-//            buy.put("title", "колбаса");
-//            buy.put("date", "2022.10.10");
-//            buy.put("sum", 150);
-
-//            buy.put("title", "шапка");
-//            buy.put("date", "2022.09.15");
-//            buy.put("sum", 500);
-
-//            buy.put("title", "акции");
-//            buy.put("date", "2022.01.11");
-//            buy.put("sum", 1000);
-
-//            buy.put("title", "тапки");
-//            buy.put("date", "2021.11.11");
-//            buy.put("sum", 600);
-
-//            buy.put("title", "игрушка");
-//            buy.put("date", "2021.10.12");
-//            buy.put("sum", 2000);
-
-            out.println(buy.toJSONString());
+            Gson gson = new GsonBuilder()
+                    .create();
+            String jsonBuy = gson.toJson(buy);
+            out.println(jsonBuy);
 
             // получаем ответ
-            JSONParser parser = new JSONParser();
-            Object obj;
-            try {
-                obj = parser.parse(in.readLine());
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-
-            JSONObject jsonObject = (JSONObject) obj;
-            System.out.println(jsonObject.toJSONString());
-
+            String jsonIn = in.readLine();
+            GsonBuilder builder = new GsonBuilder();
+            Gson gsonIn = builder
+                    .create();
+            Statistic statistic = gsonIn.fromJson(jsonIn, Statistic.class);
+            System.out.println(statistic.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
