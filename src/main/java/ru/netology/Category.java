@@ -24,4 +24,12 @@ public class Category {
     public void setSum(Long sum) {
         this.sum = sum;
     }
+
+    @Override
+    public String toString() {
+        return "{\n"+
+                "\"category\": " + name + ",\n" +
+                "\"sum\": " + sum +
+                "\n}";
+    }
 }
